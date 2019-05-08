@@ -58,6 +58,8 @@ std::shared_ptr<void> CudaDevice::MakeDataFromForeignPointer(const std::shared_p
     // check memory validity
     void* ptr = data.get();
     cudaPointerAttributes attr{};
+    // to avoid new CUDA context is created on (the default) device instead of target the device.
+    CudaSetDeviceScope scope{index()};
     cudaError_t status = cudaPointerGetAttributes(&attr, ptr);
     switch (status) {
         case cudaSuccess:
